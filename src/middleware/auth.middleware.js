@@ -21,6 +21,12 @@ async function authMiddleware(req, res, next) {
         req.user = user;
         next();
     } catch (error) {
+        if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+            return res.status(401).json({
+                message: "Unauthorized"
+            });
+        }
+
         res.status(500).json({
             message: error.message
         });
