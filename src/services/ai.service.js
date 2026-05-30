@@ -166,7 +166,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                     `
 
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         contents: prompt,
         config: {
             responseMimeType: "application/json",
@@ -175,7 +175,20 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
     })
 
 
-    const jsonContent = JSON.parse(response.text)
+let jsonContent;
+
+try {
+    console.log("AI RESPONSE:");
+    console.log(response.text);
+
+    jsonContent = JSON.parse(response.text);
+} catch (err) {
+    console.error("JSON PARSE ERROR");
+    console.error(err);
+    console.error(response.text);
+
+    throw err;
+}
 
     const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
 
