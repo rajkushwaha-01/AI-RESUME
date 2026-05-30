@@ -196,30 +196,32 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
 // }
 
-console.log("STEP 1");
 
-const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
-    config: {
-        responseMimeType: "application/json",
-        responseSchema: zodToJsonSchema(resumePdfSchema),
-    }
-});
 
-console.log("STEP 2");
+async function generatePdfFromHtml(htmlContent) {
 
-console.log(response.text);
+    const browser = await puppeteer.launch();
 
-const jsonContent = JSON.parse(response.text);
+    const page = await browser.newPage();
 
-console.log("STEP 3");
+    await page.setContent(htmlContent, {
+        waitUntil: "networkidle0"
+    });
 
-const pdfBuffer = await generatePdfFromHtml(jsonContent.html);
+    const pdfBuffer = await page.pdf({
+        format: "A4",
+        margin: {
+            top: "20mm",
+            bottom: "20mm",
+            left: "15mm",
+            right: "15mm"
+        }
+    });
 
-console.log("STEP 4");
+    await browser.close();
 
-return pdfBuffer;}
+    return pdfBuffer;
+}}
 
 module.exports = { generateInterviewReport, generateResumePdf }
 
