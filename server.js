@@ -2,6 +2,7 @@ require('dotenv').config();
 const dns = require('dns')
 const app = require('./src/app')
 const ConnectDB = require('./src/DB/db')
+const invokeGeminiAi = require('./src/services/ai.service')
 
 
 dns.setServers([
@@ -11,6 +12,7 @@ dns.setServers([
 
 
 ConnectDB();
+invokeGeminiAi();
 
 
 app.listen(3000 , ()=>{
