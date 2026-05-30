@@ -165,36 +165,61 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
                         The resume should not be so lengthy, it should ideally be 1-2 pages long when converted to PDF. Focus on quality rather than quantity and make sure to include all the relevant information that can increase the candidate's chances of getting an interview call for the given job description.
                     `
 
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(resumePdfSchema),
-        }
-    })
+//     const response = await ai.models.generateContent({
+//         model: "gemini-3-flash-preview",
+//         contents: prompt,
+//         config: {
+//             responseMimeType: "application/json",
+//             responseSchema: zodToJsonSchema(resumePdfSchema),
+//         }
+//     })
 
 
-let jsonContent;
+// let jsonContent;
 
-try {
-    console.log("AI RESPONSE:");
-    console.log(response.text);
+// try {
+//     console.log("AI RESPONSE:");
+//     console.log(response.text);
 
-    jsonContent = JSON.parse(response.text);
-} catch (err) {
-    console.error("JSON PARSE ERROR");
-    console.error(err);
-    console.error(response.text);
+//     jsonContent = JSON.parse(response.text);
+// } catch (err) {
+//     console.error("JSON PARSE ERROR");
+//     console.error(err);
+//     console.error(response.text);
 
-    throw err;
-}
+//     throw err;
+// }
 
-    const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
+//     const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
 
-    return pdfBuffer
+//     return pdfBuffer
 
-}
+// }
+
+console.log("STEP 1");
+
+const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+        responseMimeType: "application/json",
+        responseSchema: zodToJsonSchema(resumePdfSchema),
+    }
+});
+
+console.log("STEP 2");
+
+console.log(response.text);
+
+const jsonContent = JSON.parse(response.text);
+
+console.log("STEP 3");
+
+const pdfBuffer = await generatePdfFromHtml(jsonContent.html);
+
+console.log("STEP 4");
+
+return pdfBuffer;}
 
 module.exports = { generateInterviewReport, generateResumePdf }
 
