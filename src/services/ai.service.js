@@ -221,7 +221,24 @@ async function generatePdfFromHtml(htmlContent) {
     await browser.close();
 
     return pdfBuffer;
-}}
+}
+ const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: zodToJsonSchema(resumePdfSchema),
+        }
+    })
+
+
+    const jsonContent = JSON.parse(response.text)
+
+    const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
+
+    return pdfBuffer
+
+}
 
 module.exports = { generateInterviewReport, generateResumePdf }
 
